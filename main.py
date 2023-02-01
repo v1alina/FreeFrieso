@@ -6,6 +6,7 @@ class Game:
         self.running = True
         self.window_width = 400
         self.window_height = 400
+        self.background_color = (202, 3, 140)
 
     def run(self):
         pygame.init()
@@ -15,10 +16,13 @@ class Game:
 
         # main game loop
         while self.running:
+            window.fill(self.background_color)
+            pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.running = False
                     pygame.quit()
+
 
 
 class Player:
