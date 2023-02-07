@@ -10,6 +10,7 @@ class Game:
 
     def run(self):
         pygame.init()
+        print("uwu")
 
         # create window
         window = pygame.display.set_mode((self.window_width, self.window_height))
