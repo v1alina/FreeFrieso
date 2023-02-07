@@ -10,7 +10,9 @@ class Game:
 
     def run(self):
         pygame.init()
+        gort = Player ()
         print("uwu")
+
 
         # create window
         window = pygame.display.set_mode((self.window_width, self.window_height))
@@ -18,16 +20,40 @@ class Game:
         # main game loop
         while self.running:
             window.fill(self.background_color)
+            gort.draw (window)
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.running = False
                     pygame.quit()
 
+            # movement for Gort (our player)
+            keys = pygame.key.get_pressed()
+            if keys[K_LEFT]:
+                gort.x -= gort.velocity
+            if keys[K_RIGHT]:
+                gort.x += gort.velocity
+            if keys[K_UP]:
+                gort.y -= gort.velocity
+            if keys[K_DOWN]:
+                gort.y += gort.velocity
+
+
+
 
 
 class Player:
-    pass
+    def __init__(self):
+        self.x = 100
+        self.y = 69
+        self.width = 20
+        self.height = 20
+        self.color = (0,0,0)
+        self.velocity = 3
+
+    def draw(self, window):
+
+        pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
 
 class Arrow:
     pass
