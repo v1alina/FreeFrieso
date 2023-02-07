@@ -1,6 +1,15 @@
 import pygame
 from pygame.locals import *
 
+"""
+TO DO:
+- add clock
+- add gravity
+- add sprites
+- add collisions (platforms and outer boundaries)
+- add arrows
+"""
+
 class Game:
     def __init__(self):
         self.running = True
@@ -10,18 +19,24 @@ class Game:
 
     def run(self):
         pygame.init()
-        gort = Player ()
-        print("uwu")
-
 
         # create window
         window = pygame.display.set_mode((self.window_width, self.window_height))
 
+        # create players
+        gort = Player()
+        liva = Player()
+
         # main game loop
         while self.running:
+
+            # drawing
             window.fill(self.background_color)
-            gort.draw (window)
+            gort.draw(window)
+            liva.draw(window)
             pygame.display.flip()
+
+            # event loop
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.running = False
@@ -38,8 +53,15 @@ class Game:
             if keys[K_DOWN]:
                 gort.y += gort.velocity
 
-
-
+            # movement for Liva (my player)
+            if keys[K_a]:
+                liva.x -= liva.velocity
+            if keys[K_d]:
+                liva.x += liva.velocity
+            if keys[K_w]:
+                liva.y -= liva.velocity
+            if keys[K_s]:
+                liva.y += liva.velocity
 
 
 class Player:
@@ -48,15 +70,16 @@ class Player:
         self.y = 69
         self.width = 20
         self.height = 20
-        self.color = (0,0,0)
-        self.velocity = 3
+        self.color = "black"
+        self.velocity = 1
 
     def draw(self, window):
-
         pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
+
 
 class Arrow:
     pass
+
 
 if __name__ == "__main__":
     game = Game()
