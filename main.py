@@ -72,9 +72,14 @@ class Player:
         self.height = 20
         self.color = "black"
         self.velocity = 1
+        gort_pic = pygame.image.load('Pictures/Gort1.png')
+        transpartent_gort = pygame.Surface.convert_alpha(gort_pic)
+
 
     def draw(self, window):
-        pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
+        if self == "gort":
+            gameDisplay.blit(transpartent_gort, (self.x,self.y)
+            #pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
 
 
 class Arrow:
