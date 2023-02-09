@@ -16,6 +16,7 @@ class Game:
         self.window_width = 400
         self.window_height = 400
         self.background_color = (202, 3, 140)
+        self.fps = 30
 
     def run(self):
         pygame.init()
@@ -27,9 +28,13 @@ class Game:
         gort = Player()
         liva = Player()
 
+        # clock
+        clock = pygame.time.Clock()
+
         # main game loop
         while self.running:
 
+            clock.tick(self.fps)
             # drawing
             window.fill(self.background_color)
             gort.draw(window)
