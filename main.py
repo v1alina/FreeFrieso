@@ -86,7 +86,6 @@ class Player:
         self.picture.convert()
         self.width = self.picture.get_width()
         self.height = self.picture.get_height()
-        print(self.height)
         self.velocity = 3
         self.left = False
         self.right = True
@@ -121,7 +120,7 @@ class Player:
             rect = self.picture.get_rect()
             rect.topleft = self.x, self.y
             pygame.draw.rect(window, "red", rect, 1)
-            self.picture = pygame.transform.flip(self.picture, False, True)
+            #self.picture = pygame.transform.flip(self.picture, False, True)
             window.blit(self.picture, rect)
 
 class Arrow:
