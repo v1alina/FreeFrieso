@@ -53,10 +53,12 @@ class Game:
                 gort.x -= gort.velocity
             if keys[K_RIGHT]:
                 gort.x += gort.velocity
+                gort.picture = pygame.transform.flip(gort.picture, True, False)
             if keys[K_UP]:
                 gort.y -= gort.velocity
             if keys[K_DOWN]:
                 gort.y += gort.velocity
+
 
             # movement for Liva (my player)
             if keys[K_a]:
@@ -77,13 +79,19 @@ class Player:
         self.height = 20
         self.color = "black"
         self.velocity = 1
-        gort_pic = pygame.image.load('Pictures/Gort1.png')
-        transpartent_gort = pygame.Surface.convert_alpha(gort_pic)
+        self.picture = pygame.image.load('Pictures/Gort1.png')
+        self.picture.convert()
 
 
     def draw(self, window):
-        if self == "gort":
-            gameDisplay.blit(transpartent_gort, (self.x,self.y)
+            #gort_pic = pygame.image.load('Pictures/Gort1.png')
+            #gort_pic.convert()
+            rect = self.picture.get_rect()
+            rect.center = self.x, self.y
+            RED = (255, 0, 0)
+            pygame.draw.rect(window, RED, rect, 1)
+            window.blit(self.picture, rect)
+
             #pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
 
 
