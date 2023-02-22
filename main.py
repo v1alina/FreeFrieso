@@ -18,7 +18,7 @@ class Game:
         self.fps = 30
 
     def redrawWindow(self, window, players):
-        # draw background 
+        # draw background
         window.fill(self.background_color)
 
         # draw players
@@ -122,6 +122,11 @@ class Player:
             pygame.draw.rect(window, "red", rect, 1)
             #self.picture = pygame.transform.flip(self.picture, False, True)
             window.blit(self.picture, rect)
+
+
+
+
+        #njdsafksdkkslds;fsl;
 
 class Arrow:
     pass
