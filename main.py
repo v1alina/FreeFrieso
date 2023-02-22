@@ -113,16 +113,12 @@ class Player:
                 self.y += self.velocity
 
     def draw(self, window):
-            #gort_pic = pygame.image.load('Pictures/Gort1.png')
-            #gort_pic.convert()
-            rect = self.picture.get_rect()
-            rect.center = self.x, self.y
-            RED = (255, 0, 0)
-            pygame.draw.rect(window, RED, rect, 1)
-            window.blit(self.picture, rect)
-
-            #pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(window, self.color, (self.x, self.y, self.width, self.height))
+        #gort_pic = pygame.image.load('Pictures/Gort1.png')
+        #gort_pic.convert()
+        rect = self.picture.get_rect()
+        rect.center = self.x, self.y
+        pygame.draw.rect(window, "red", rect, 1)
+        window.blit(self.picture, rect)
 
 
 class Arrow:
