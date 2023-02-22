@@ -17,6 +17,17 @@ class Game:
         self.background_color = (202, 3, 140)
         self.fps = 30
 
+    def redrawWindow(self, window, players):
+        # draw background 
+        window.fill(self.background_color)
+
+        # draw players
+        for player in players:
+            player.draw(window)
+
+        # update window
+        pygame.display.flip()
+
     def run(self):
         pygame.init()
 
@@ -24,8 +35,11 @@ class Game:
         window = pygame.display.set_mode((self.window_width, self.window_height))
 
         # create players
-        gort = Player((100, self.window_height-20))
-        liva = Player((50, self.window_height-20))
+        players = []
+        gort = Player((100, self.window_height-50), 'Pictures/Gort1.png')
+        liva = Player((50, self.window_height-50), 'Pictures/Gort1.png')
+        players.append(gort)
+        players.append(liva)
 
         # clock
         clock = pygame.time.Clock()
@@ -34,11 +48,7 @@ class Game:
         while self.running:
 
             clock.tick(self.fps)
-            # drawing
-            window.fill(self.background_color)
-            gort.draw(window)
-            liva.draw(window)
-            pygame.display.flip()
+            self.redrawWindow(window, players)
 
             # event loop
             for event in pygame.event.get():
@@ -51,8 +61,6 @@ class Game:
             if keys[K_LEFT]:
                 gort.move("LEFT")
             if keys[K_RIGHT]:
-                gort.x += gort.velocity
-                gort.picture = pygame.transform.flip(gort.picture, True, False)
                 gort.move("RIGHT")
             if keys[K_UP]:
                 gort.move("UP")
@@ -70,33 +78,30 @@ class Game:
             if keys[K_s]:
                 liva.move("DOWN")
 
-            # update hitboxes
-            gort.hitbox = pygame.Rect(gort.x, gort.y, gort.width, gort.height)
-            liva.hitbox = pygame.Rect(liva.x, liva.y, liva.width, liva.height)
-
-            # check collision
-            if gort.hitbox.colliderect(liva.hitbox):
-                print("hit")
-
 
 class Player:
-    def __init__(self, start_pos):
+    def __init__(self, start_pos, picture):
         self.x, self.y = start_pos
-        self.width = 20
-        self.height = 20
-        self.color = "black"
-        self.picture = pygame.image.load('Pictures/Gort1.png')
+        self.picture = pygame.image.load(picture)
         self.picture.convert()
+        self.width = self.picture.get_width()
+        self.height = self.picture.get_height()
+        print(self.height)
         self.velocity = 3
-        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.left = False
+        self.right = True
 
     def move(self, direction):
         if direction == "LEFT":
+            self.left = True
+            self.right = False
             if self.x < self.velocity:
                 self.x = 0
             else:
                 self.x -= self.velocity
         elif direction == "RIGHT":
+            self.left = False
+            self.right = True
             if self.x + self.width > 400 - self.velocity:
                 self.x = 400 - self.width
             else:
@@ -114,10 +119,10 @@ class Player:
 
     def draw(self, window):
             rect = self.picture.get_rect()
-            rect.center = self.x, self.y
+            rect.topleft = self.x, self.y
             pygame.draw.rect(window, "red", rect, 1)
+            self.picture = pygame.transform.flip(self.picture, False, True)
             window.blit(self.picture, rect)
-            #pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
 
 class Arrow:
     pass
