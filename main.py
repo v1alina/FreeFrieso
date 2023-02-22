@@ -3,7 +3,6 @@ from pygame.locals import *
 
 """
 TO DO:
-- add clock
 - add gravity
 - add sprites
 - add collisions (platforms and outer boundaries)
@@ -25,8 +24,8 @@ class Game:
         window = pygame.display.set_mode((self.window_width, self.window_height))
 
         # create players
-        gort = Player()
-        liva = Player()
+        gort = Player((100, self.window_height-20))
+        liva = Player((50, self.window_height-20))
 
         # clock
         clock = pygame.time.Clock()
@@ -50,41 +49,67 @@ class Game:
             # movement for Gort (our player)
             keys = pygame.key.get_pressed()
             if keys[K_LEFT]:
-                gort.x -= gort.velocity
+                gort.move("LEFT")
             if keys[K_RIGHT]:
-                gort.x += gort.velocity
+                gort.move("RIGHT")
             if keys[K_UP]:
-                gort.y -= gort.velocity
+                gort.move("UP")
             if keys[K_DOWN]:
-                gort.y += gort.velocity
+                gort.move("DOWN")
 
             # movement for Liva (my player)
             if keys[K_a]:
-                liva.x -= liva.velocity
+                liva.move("LEFT")
             if keys[K_d]:
-                liva.x += liva.velocity
+                liva.move("RIGHT")
             if keys[K_w]:
-                liva.y -= liva.velocity
+                liva.move("UP")
             if keys[K_s]:
-                liva.y += liva.velocity
+                liva.move("DOWN")
+
+            # update hitboxes
+            gort.hitbox = pygame.Rect(gort.x, gort.y, gort.width, gort.height)
+            liva.hitbox = pygame.Rect(liva.x, liva.y, liva.width, liva.height)
+
+            # check collision
+            if gort.hitbox.colliderect(liva.hitbox):
+                print("hit")
 
 
 class Player:
-    def __init__(self):
-        self.x = 100
-        self.y = 69
+    def __init__(self, start_pos):
+        self.x, self.y = start_pos
         self.width = 20
         self.height = 20
         self.color = "black"
-        self.velocity = 1
-        gort_pic = pygame.image.load('Pictures/Gort1.png')
-        transpartent_gort = pygame.Surface.convert_alpha(gort_pic)
+        self.velocity = 3
+        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+        #self.image = pygame.image.load('Pictures/image')
 
+    def move(self, direction):
+        if direction == "LEFT":
+            if self.x < self.velocity:
+                self.x = 0
+            else:
+                self.x -= self.velocity
+        elif direction == "RIGHT":
+            if self.x + self.width > 400 - self.velocity:
+                self.x = 400 - self.width
+            else:
+                self.x += self.velocity
+        elif direction == "UP":
+            if self.y < self.velocity:
+                self.y = 0
+            else:
+                self.y -= self.velocity
+        elif direction == "DOWN":
+            if self.y + self.height > 400 - self.velocity:
+                self.y = 400 - self.height
+            else:
+                self.y += self.velocity
 
     def draw(self, window):
-        if self == "gort":
-            gameDisplay.blit(transpartent_gort, (self.x,self.y)
-            #pygame.draw.rect (window, self.color, (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(window, self.color, (self.x, self.y, self.width, self.height))
 
 
 class Arrow:
