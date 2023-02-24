@@ -106,7 +106,6 @@ class Player:
         self.picture = pygame.image.load(picture).convert_alpha()
         self.width = self.picture.get_width()
         self.height = self.picture.get_height()
-
         self.velocity = 5
         self.x_velocity = 0
         self.y_velocity = 0
@@ -139,7 +138,7 @@ class Player:
         rect = (self.x, self.y, self.width, self.height)
         pygame.draw.rect(window, "red", rect, 1)
         window.blit(self.picture, rect)
-            
+
 
 if __name__ == "__main__":
     game = Game()
