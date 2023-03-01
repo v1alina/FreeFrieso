@@ -9,6 +9,8 @@ TO DO:
 - add arrows
 """
 
+
+
 class Game:
     def __init__(self):
         self.running = True
@@ -23,7 +25,7 @@ class Game:
 
         # draw players
         for player in players:
-            player.draw(window)
+            player.draw(window, player.picture)
 
         # update window
         pygame.display.flip()
@@ -36,10 +38,12 @@ class Game:
 
         # create players
         players = []
-        gort = Player((100, self.window_height-50), 'Pictures/Gort1.png')
+        gort = Player((100, self.window_height-50), 'Pictures/run.png')
         liva = Player((50, self.window_height-50), 'Pictures/Gort1.png')
         players.append(gort)
-        players.append(liva)
+        #players.append(liva)
+        #sprite = gort.get_image(24, 24)
+
 
         # clock
         clock = pygame.time.Clock()
@@ -79,16 +83,17 @@ class Game:
                 liva.move("DOWN")
 
 
-class Player:
+class Player(pygame.sprite.Sprite):
     def __init__(self, start_pos, picture):
         self.x, self.y = start_pos
-        self.picture = pygame.image.load(picture)
-        self.picture.convert()
+        self.picture = pygame.image.load(picture).convert_alpha()
         self.width = self.picture.get_width()
         self.height = self.picture.get_height()
         self.velocity = 3
         self.left = False
         self.right = True
+        self.sprites = []
+
 
     def move(self, direction):
         if direction == "LEFT":
@@ -116,17 +121,22 @@ class Player:
             else:
                 self.y += self.velocity
 
-    def draw(self, window):
-            rect = self.picture.get_rect()
-            rect.topleft = self.x, self.y
-            pygame.draw.rect(window, "red", rect, 1)
-            #self.picture = pygame.transform.flip(self.picture, False, True)
-            window.blit(self.picture, rect)
 
+    def get_image(self, sheet, width, height):
+        image = pygame.Surface((width,height)).convert_alpha()
+        image.blit(sheet,(0,0),(0,0, width, height))
+        return image
 
-
+    def draw(self, window,image):
+        rect = self.get_image(image, 30,30).get_rect()
+        #rect = self.picture.get_rect()
+        #rect.topleft = self.x, self.y
+        #pygame.draw.rect(window, "red", rect, 1)
+        #self.picture = pygame.transform.flip(self.picture, False, True)
+        window.blit(self.get_image(image, 30,30), rect)
 
         #njdsafksdkkslds;fsl;
+
 
 class Arrow:
     pass
