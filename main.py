@@ -10,7 +10,6 @@ TO DO:
 """
 
 
-
 class Game:
     def __init__(self):
         self.running = True
@@ -134,8 +133,6 @@ class Player(pygame.sprite.Sprite):
         #pygame.draw.rect(window, "red", rect, 1)
         #self.picture = pygame.transform.flip(self.picture, False, True)
         window.blit(self.get_image(image, 30,30), rect)
-
-        #njdsafksdkkslds;fsl;
 
 
 class Arrow:
