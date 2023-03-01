@@ -19,7 +19,7 @@ class Game:
         self.CAPTION = "Miriso"
 
     def draw(self, window, players):
-        # draw background 
+        # draw background
         window.fill(self.BACKGROUND_COLOR)
 
         # draw players
@@ -49,7 +49,7 @@ class Game:
 
         # main game loop
         while self.running:
-            
+
             # limit the frame rate
             clock.tick(self.FPS)
 
@@ -62,8 +62,8 @@ class Game:
                 # check if window is closed
                 if event.type == pygame.QUIT:
                     self.running = False
-                    break 
-                
+                    break
+
                 # detects players jumping with 'KEYDOWN' instead of 'key.get_pressed()'
                 # so the player only jumps once instead of as long as the key is pressed
                 if event.type == pygame.KEYDOWN:
