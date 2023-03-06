@@ -1,11 +1,10 @@
 import pygame
-from pygame.locals import *
+import sys
 
 """
 TO DO:
-- add gravity
 - add sprites
-- add collisions (platforms and outer boundaries)
+- add collisions
 - add arrows
 """
 
@@ -13,14 +12,15 @@ TO DO:
 class Game:
     def __init__(self):
         self.running = True
-        self.window_width = 400
-        self.window_height = 400
-        self.background_color = (202, 3, 140)
-        self.fps = 30
+        self.WINDOW_WIDTH = 400
+        self.WINDOW_HEIGHT = 400
+        self.BACKGROUND_COLOR = (202, 3, 140)
+        self.FPS = 60
+        self.CAPTION = "Miriso"
 
-    def redrawWindow(self, window, players):
+    def draw(self, window, players):
         # draw background
-        window.fill(self.background_color)
+        window.fill(self.BACKGROUND_COLOR)
 
         # draw players
         for player in players:
@@ -30,10 +30,12 @@ class Game:
         pygame.display.flip()
 
     def run(self):
+        # initiate pygame
         pygame.init()
 
         # create window
-        window = pygame.display.set_mode((self.window_width, self.window_height))
+        window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
+        pygame.display.set_caption(self.CAPTION)
 
         # create players
         players = []
@@ -50,36 +52,52 @@ class Game:
         # main game loop
         while self.running:
 
-            clock.tick(self.fps)
-            self.redrawWindow(window, players)
+            # limit the frame rate
+            clock.tick(self.FPS)
+
+            # draw the background and players on the screen
+            self.draw(window, players)
 
             # event loop
             for event in pygame.event.get():
-                if event.type == QUIT:
+
+                # check if window is closed
+                if event.type == pygame.QUIT:
                     self.running = False
-                    pygame.quit()
+                    break
 
-            # movement for Gort (our player)
+                # detects players jumping with 'KEYDOWN' instead of 'key.get_pressed()'
+                # so the player only jumps once instead of as long as the key is pressed
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        gort.move("up")
+                    elif event.key == pygame.K_w:
+                        liva.move("up")
+
+            # check which keys are pressed
             keys = pygame.key.get_pressed()
-            if keys[K_LEFT]:
-                gort.move("LEFT")
-            if keys[K_RIGHT]:
-                gort.move("RIGHT")
-            if keys[K_UP]:
-                gort.move("UP")
-            if keys[K_DOWN]:
-                gort.move("DOWN")
 
+            # left/right movement for Gort and Liva, respectively
+            # resets x_velocity so the player stops moving when the key is no longer pressed
+            gort.x_velocity = 0
+            if keys[pygame.K_LEFT]:
+                gort.move("left")
+            if keys[pygame.K_RIGHT]:
+                gort.move("right")
 
-            # movement for Liva (my player)
-            if keys[K_a]:
-                liva.move("LEFT")
-            if keys[K_d]:
-                liva.move("RIGHT")
-            if keys[K_w]:
-                liva.move("UP")
-            if keys[K_s]:
-                liva.move("DOWN")
+            liva.x_velocity = 0
+            if keys[pygame.K_a]:
+                liva.move("left")
+            if keys[pygame.K_d]:
+                liva.move("right")
+
+            # update players' positions and velocities
+            for player in players:
+                player.update(self.FPS)
+
+        # exit the game/program
+        pygame.quit()
+        sys.exit()
 
 
 class Player(pygame.sprite.Sprite):
@@ -95,30 +113,24 @@ class Player(pygame.sprite.Sprite):
 
 
     def move(self, direction):
-        if direction == "LEFT":
-            self.left = True
-            self.right = False
-            if self.x < self.velocity:
-                self.x = 0
-            else:
-                self.x -= self.velocity
-        elif direction == "RIGHT":
-            self.left = False
-            self.right = True
-            if self.x + self.width > 400 - self.velocity:
-                self.x = 400 - self.width
-            else:
-                self.x += self.velocity
-        elif direction == "UP":
-            if self.y < self.velocity:
-                self.y = 0
-            else:
-                self.y -= self.velocity
-        elif direction == "DOWN":
-            if self.y + self.height > 400 - self.velocity:
-                self.y = 400 - self.height
-            else:
-                self.y += self.velocity
+        if direction == "left":
+            self.x_velocity = -self.velocity
+        elif direction == "right":
+            self.x_velocity = self.velocity
+        elif direction == "up":
+            self.y_velocity = -self.gravity * 16
+
+    def update(self, fps):
+        # simulates gravity: increasing fall_count is more acceleration
+        # with a minimum of 1 so the first part of falling is not too slow
+        self.y_velocity += min(1, (self.fall_count / fps) * self.gravity)
+        self.fall_count += 1
+
+        # update the player's position
+        # note: the minimum of 350 ensures the player does not fall off the screen
+        # replace second line with 'self.y += self.y_velocity' once platforms are added
+        self.x += self.x_velocity
+        self.y = min(350, self.y + self.y_velocity)
 
 
     def get_image(self, sheet, width, height):
