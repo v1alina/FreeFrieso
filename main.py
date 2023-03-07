@@ -3,9 +3,11 @@ import sys
 
 """
 TO DO:
-- add sprites
-- add collisions
-- add arrows
+- fix jumping 
+- add max jump_count
+- horizontal collision
+- add masks
+- fall on the side off the screen
 """
 
 
@@ -18,13 +20,13 @@ class Game:
         self.FPS = 60
         self.CAPTION = "Miriso"
 
-    def draw(self, window, players):
+    def draw(self, window, players, platforms):
         # draw background 
         window.fill(self.BACKGROUND_COLOR)
 
-        # draw players
-        for player in players:
-            player.draw(window)
+        # draw platforms and players
+        platforms.draw(window)
+        players.draw(window)
 
         # update window
         pygame.display.flip()
@@ -38,11 +40,23 @@ class Game:
         pygame.display.set_caption(self.CAPTION)
 
         # create players
-        players = []
-        gort = Player(100, 0, 'Pictures/Gort1.png')
-        liva = Player(50, 0, 'Pictures/Gort1.png')
-        players.append(gort)
-        players.append(liva)
+        players = pygame.sprite.Group()
+        gort = Player(50, 50, "blue")
+        gort.rect.x = 200
+        liva = Player(50, 50, "red")
+        liva.rect.x = 50
+        players.add(gort)
+        players.add(liva)
+
+        # create platforms
+        platforms = pygame.sprite.Group()
+        platform = Platform(100, 20, "red")
+        platform.rect.x = 100
+        platform.rect.y = 200
+        floor = Platform(400, 10, "green")
+        floor.rect.y = 390
+        platforms.add(platform)
+        platforms.add(floor)
 
         # clock
         clock = pygame.time.Clock()
@@ -54,7 +68,7 @@ class Game:
             clock.tick(self.FPS)
 
             # draw the background and players on the screen
-            self.draw(window, players)
+            self.draw(window, players, platforms)
 
             # event loop
             for event in pygame.event.get():
@@ -93,24 +107,28 @@ class Game:
             for player in players:
                 player.update(self.FPS)
 
+            # check collision
+            for player in players:
+                player.check_collision(platforms)
+
         # exit the game/program
         pygame.quit()
         sys.exit()
 
 
-class Player:
-    def __init__(self, x, y, picture):
-        self.x = x
-        self.y = y
+class Player(pygame.sprite.Sprite):
+    def __init__(self, width, height, color, picture=None):
+        super().__init__()
         # convert_alpha is necessary for transparent background
-        self.picture = pygame.image.load(picture).convert_alpha()
-        self.width = self.picture.get_width()
-        self.height = self.picture.get_height()
+        #self.picture = pygame.image.load(picture).convert_alpha()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
         self.velocity = 5
         self.x_velocity = 0
         self.y_velocity = 0
         self.fall_count = 0
-        self.gravity = 1
+        self.gravity = 2
 
     def move(self, direction):
         if direction == "left":
@@ -118,7 +136,18 @@ class Player:
         elif direction == "right":
             self.x_velocity = self.velocity
         elif direction == "up":
-            self.y_velocity = -self.gravity * 16
+            self.y_velocity = -self.gravity * 4
+
+    def check_collision(self, objects):
+        objects_hit = pygame.sprite.spritecollide(self, objects, False)
+        if objects_hit:
+            if self.y_velocity < 0:
+                self.rect.top = objects_hit[0].rect.bottom
+                self.y_velocity *= -1
+            elif self.y_velocity > 0:
+                self.rect.bottom = objects_hit[0].rect.top
+                self.fall_count = 0
+                self.y_velocity = 0
 
     def update(self, fps):
         # simulates gravity: increasing fall_count is more acceleration
@@ -127,17 +156,17 @@ class Player:
         self.fall_count += 1
 
         # update the player's position
-        # note: the minimum of 350 ensures the player does not fall off the screen
-        # replace second line with 'self.y += self.y_velocity' once platforms are added
-        self.x += self.x_velocity
-        self.y = min(350, self.y + self.y_velocity)
+        self.rect.x += self.x_velocity
+        self.rect.y += self.y_velocity
 
-    def draw(self, window):
-        # flip picture: self.picture = pygame.transform.flip(self.picture, False, True)
-        # draw gort with a red hitbox
-        rect = (self.x, self.y, self.width, self.height)
-        pygame.draw.rect(window, "red", rect, 1)
-        window.blit(self.picture, rect)
+
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, width, height, color):
+        super().__init__()
+
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
 
 
 if __name__ == "__main__":
