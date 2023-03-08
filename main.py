@@ -39,8 +39,8 @@ class Game:
 
         # create players
         players = []
-        gort = Player((100, self.window_height-50), 'Pictures/run.png')
-        liva = Player((50, self.window_height-50), 'Pictures/Gort1.png')
+        gort = Player((100, self.WINDOW_HEIGHT-50), 'Pictures/run.png')
+        liva = Player((50, self.WINDOW_HEIGHT-50), 'Pictures/Gort1.png')
         players.append(gort)
         #players.append(liva)
         #sprite = gort.get_image(24, 24)
