@@ -108,6 +108,8 @@ class Player(pygame.sprite.Sprite):
         self.width = self.picture.get_width()
         self.height = self.picture.get_height()
         self.velocity = 3
+        self.x_velocity = 0
+        self.y_velocity = 0
         self.left = False
         self.right = True
         self.sprites = []
