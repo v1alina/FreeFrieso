@@ -32,6 +32,7 @@ class Game:
     def run(self):
         # initiate pygame
         pygame.init()
+        print ("/nThis is our game!")
 
         # create window
         window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
