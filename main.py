@@ -1,10 +1,7 @@
 import pygame
 import sys
-#import numpy as np
-import levels
 from game_objects import Player
 from levels import Level
-#import math
 
 
 class Game:
