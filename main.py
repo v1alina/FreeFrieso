@@ -103,17 +103,18 @@ class Game:
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, start_pos, picture):
-        self.x, self.y = start_pos
+        self.x = 0
+        self.y = 0
+        # convert_alpha is necessary for transparent background
         self.picture = pygame.image.load(picture).convert_alpha()
         self.width = self.picture.get_width()
         self.height = self.picture.get_height()
-        self.velocity = 3
+        self.velocity = 5
         self.x_velocity = 0
         self.y_velocity = 0
-        self.left = False
-        self.right = True
-        self.sprites = []
-
+        self.fall_count = 0
+        self.gravity = 1
+        animation_count = 0
 
     def move(self, direction):
         if direction == "left":
